@@ -1,10 +1,13 @@
 # Basic Secret Injection
 
 # ==== quick install commands ======
+
 ```
+git clone https://github.com/soufianem370/docker-development-youtube-series.git
+cd docker-development-youtube-series/hashicorp/vault
 kubectl create ns vault-ex2
-helm repo add hashicorp https://helm.releases.hashicorp.com
-helm install vault hashicorp/vault -n vault-ex2
+kubectl -n vault-ex2 apply -f ./server/
+kubectl -n vault-ex2 apply -f ./injector/
 kubectl -n vault-ex2 get pods
 kubectl -n vault-ex2 exec -it vault-0 vault operator init
 ```
