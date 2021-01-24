@@ -4,7 +4,8 @@
 ```
 kubectl create ns vault-ex2
 helm repo add hashicorp https://helm.releases.hashicorp.com
-helm install vault hashicorp/vault 
+helm install vault hashicorp/vault -n vault-ex2
+kubectl -n vault-ex2 get pods
 kubectl -n vault-ex2 exec -it vault-0 vault operator init
 ```
 ### Repeat three times
