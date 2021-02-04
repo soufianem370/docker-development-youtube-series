@@ -1,0 +1,198 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    vault.hashicorp.com/agent-inject: "true"
+    vault.hashicorp.com/agent-inject-secret-helloworld: secret/basic-secret/helloworld
+    vault.hashicorp.com/agent-inject-status: injected
+    vault.hashicorp.com/agent-inject-template-helloworld: |
+      {{- with secret "secret/basic-secret/helloworld" -}}
+      {
+        "username" : "{{ .Data.username }}",
+        "password" : "{{ .Data.password }}"
+      }
+      {{- end }}
+    vault.hashicorp.com/role: basic-secret-role
+    vault.hashicorp.com/tls-skip-verify: "true"
+  creationTimestamp: "2021-02-04T21:59:12Z"
+  generateName: basic-secret-74b4fdbcdc-
+  labels:
+    app: basic-secret
+    pod-template-hash: 74b4fdbcdc
+  name: basic-secret-74b4fdbcdc-8h4df
+  namespace: vault-example
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicaSet
+    name: basic-secret-74b4fdbcdc
+    uid: 0a2f66c7-347c-49c7-a104-8e22275da30e
+  resourceVersion: "5929"
+  selfLink: /api/v1/namespaces/vault-example/pods/basic-secret-74b4fdbcdc-8h4df
+  uid: 311cfb27-4a4a-4d00-9917-34c4112cba02
+spec:
+  containers:
+  - image: jweissig/app:0.0.1
+    imagePullPolicy: IfNotPresent
+    name: app
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: basic-secret-token-kcdbg
+      readOnly: true
+    - mountPath: /vault/secrets
+      name: vault-secrets
+  - args:
+    - echo ${VAULT_CONFIG?} | base64 -d > /tmp/config.json && vault agent -config=/tmp/config.json
+    command:
+    - /bin/sh
+    - -ec
+    env:
+    - name: VAULT_CONFIG
+      value: eyJhdXRvX2F1dGgiOnsibWV0aG9kIjp7InR5cGUiOiJrdWJlcm5ldGVzIiwiY29uZmlnIjp7InJvbGUiOiJiYXNpYy1zZWNyZXQtcm9sZSJ9fSwic2luayI6W3sidHlwZSI6ImZpbGUiLCJjb25maWciOnsicGF0aCI6Ii9ob21lL3ZhdWx0Ly50b2tlbiJ9fV19LCJleGl0X2FmdGVyX2F1dGgiOmZhbHNlLCJwaWRfZmlsZSI6Ii9ob21lL3ZhdWx0Ly5waWQiLCJ2YXVsdCI6eyJhZGRyZXNzIjoiaHR0cHM6Ly92YXVsdC1leGFtcGxlLnZhdWx0LWV4YW1wbGUuc3ZjOjgyMDAiLCJ0bHNfc2tpcF92ZXJpZnkiOnRydWV9LCJ0ZW1wbGF0ZSI6W3siZGVzdGluYXRpb24iOiIvdmF1bHQvc2VjcmV0cy9oZWxsb3dvcmxkIiwiY29udGVudHMiOiJ7ey0gd2l0aCBzZWNyZXQgXCJzZWNyZXQvYmFzaWMtc2VjcmV0L2hlbGxvd29ybGRcIiAtfX1cbntcbiAgXCJ1c2VybmFtZVwiIDogXCJ7eyAuRGF0YS51c2VybmFtZSB9fVwiLFxuICBcInBhc3N3b3JkXCIgOiBcInt7IC5EYXRhLnBhc3N3b3JkIH19XCJcbn1cbnt7LSBlbmQgfX1cbiIsImxlZnRfZGVsaW1pdGVyIjoie3siLCJyaWdodF9kZWxpbWl0ZXIiOiJ9fSJ9XX0=
+    image: vault:1.3.1
+    imagePullPolicy: IfNotPresent
+    name: vault-agent
+    resources:
+      limits:
+        cpu: 500m
+        memory: 128Mi
+      requests:
+        cpu: 250m
+        memory: 64Mi
+    securityContext:
+      runAsGroup: 1000
+      runAsNonRoot: true
+      runAsUser: 100
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /vault/secrets
+      name: vault-secrets
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: basic-secret-token-kcdbg
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  initContainers:
+  - args:
+    - echo ${VAULT_CONFIG?} | base64 -d > /tmp/config.json && vault agent -config=/tmp/config.json
+    command:
+    - /bin/sh
+    - -ec
+    env:
+    - name: VAULT_CONFIG
+      value: eyJhdXRvX2F1dGgiOnsibWV0aG9kIjp7InR5cGUiOiJrdWJlcm5ldGVzIiwiY29uZmlnIjp7InJvbGUiOiJiYXNpYy1zZWNyZXQtcm9sZSJ9fSwic2luayI6W3sidHlwZSI6ImZpbGUiLCJjb25maWciOnsicGF0aCI6Ii9ob21lL3ZhdWx0Ly50b2tlbiJ9fV19LCJleGl0X2FmdGVyX2F1dGgiOnRydWUsInBpZF9maWxlIjoiL2hvbWUvdmF1bHQvLnBpZCIsInZhdWx0Ijp7ImFkZHJlc3MiOiJodHRwczovL3ZhdWx0LWV4YW1wbGUudmF1bHQtZXhhbXBsZS5zdmM6ODIwMCIsInRsc19za2lwX3ZlcmlmeSI6dHJ1ZX0sInRlbXBsYXRlIjpbeyJkZXN0aW5hdGlvbiI6Ii92YXVsdC9zZWNyZXRzL2hlbGxvd29ybGQiLCJjb250ZW50cyI6Int7LSB3aXRoIHNlY3JldCBcInNlY3JldC9iYXNpYy1zZWNyZXQvaGVsbG93b3JsZFwiIC19fVxue1xuICBcInVzZXJuYW1lXCIgOiBcInt7IC5EYXRhLnVzZXJuYW1lIH19XCIsXG4gIFwicGFzc3dvcmRcIiA6IFwie3sgLkRhdGEucGFzc3dvcmQgfX1cIlxufVxue3stIGVuZCB9fVxuIiwibGVmdF9kZWxpbWl0ZXIiOiJ7eyIsInJpZ2h0X2RlbGltaXRlciI6In19In1dfQ==
+    image: vault:1.3.1
+    imagePullPolicy: IfNotPresent
+    name: vault-agent-init
+    resources:
+      limits:
+        cpu: 500m
+        memory: 128Mi
+      requests:
+        cpu: 250m
+        memory: 64Mi
+    securityContext:
+      runAsGroup: 1000
+      runAsNonRoot: true
+      runAsUser: 100
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /vault/secrets
+      name: vault-secrets
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: basic-secret-token-kcdbg
+      readOnly: true
+  nodeName: gke-cluster-1-default-pool-3d4178af-f0nj
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: basic-secret
+  serviceAccountName: basic-secret
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: basic-secret-token-kcdbg
+    secret:
+      defaultMode: 420
+      secretName: basic-secret-token-kcdbg
+  - emptyDir:
+      medium: Memory
+    name: vault-secrets
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2021-02-04T21:59:21Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2021-02-04T21:59:24Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2021-02-04T21:59:24Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2021-02-04T21:59:12Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://b2058c03222d84b38724391c3b05a7888e5fbaa6054c7ca6df9ebcddeb658af0
+    image: jweissig/app:0.0.1
+    imageID: docker-pullable://jweissig/app@sha256:54e7159831602dd8ffd8b81e1d4534c664a73e88f3f340df9c637fc16a5cf0b7
+    lastState: {}
+    name: app
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2021-02-04T21:59:23Z"
+  - containerID: docker://8cf50c339d02a5bb0fa739f1e8f0af3f96510745bd6de4000129fc0a92e205f3
+    image: vault:1.3.1
+    imageID: docker-pullable://vault@sha256:2f797433dfc322d7ba6fa81074e010873c740eb45e83ff5ced49cba585f82a66
+    lastState: {}
+    name: vault-agent
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2021-02-04T21:59:24Z"
+  hostIP: 10.128.0.3
+  initContainerStatuses:
+  - containerID: docker://e8db5f848bb4c3e484c00a0293c49173d5af38fb44c455401c4a41b3fa84f446
+    image: vault:1.3.1
+    imageID: docker-pullable://vault@sha256:2f797433dfc322d7ba6fa81074e010873c740eb45e83ff5ced49cba585f82a66
+    lastState: {}
+    name: vault-agent-init
+    ready: true
+    restartCount: 0
+    state:
+      terminated:
+        containerID: docker://e8db5f848bb4c3e484c00a0293c49173d5af38fb44c455401c4a41b3fa84f446
+        exitCode: 0
+        finishedAt: "2021-02-04T21:59:20Z"
+        reason: Completed
+        startedAt: "2021-02-04T21:59:20Z"
+  phase: Running
+  podIP: 10.4.1.5
+  podIPs:
+  - ip: 10.4.1.5
+  qosClass: Burstable
+  startTime: "2021-02-04T21:59:12Z"
