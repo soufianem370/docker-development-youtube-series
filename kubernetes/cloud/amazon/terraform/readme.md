@@ -10,6 +10,10 @@ You can get the Amazon CLI on [Docker-Hub](https://hub.docker.com/r/amazon/aws-c
 We'll need the Amazon CLI to gather information so we can build our Terraform file.
 
 ```
+# my image soufiane aws/helm/kubect
+
+docker run -it --rm -v ${PWD}:/work -w /work -e AWS_ACCESS_KEY_ID="AKIAWXN75JDUXXKVBFF2" -e AWS_SECRET_ACCESS_KEY="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" -e AWS_DEFAULT_REGION="us-east-1" soufianem370/kube-tools-aws-terraform:latest
+
 # Run Amazon CLI
 docker run -it --rm -v ${PWD}:/work -w /work --entrypoint /bin/sh amazon/aws-cli:2.0.43
 
